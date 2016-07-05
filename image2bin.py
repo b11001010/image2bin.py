@@ -1,13 +1,22 @@
 from PIL import Image
 from struct import *
+import argparse
 
 def main():
-    img = Image.open("example.png")
+    parser = argparse.ArgumentParser(description="convert image file to binary file")
+    parser.add_argument("input", help="input image file path")
+    parser.add_argument("-o", "--output", help="output binary file path")
+    args = parser.parse_args()
+
+    if args.output == None:
+        args.output = args.input + ".bin"
+
+    img = Image.open(args.input)
     binary = get_binary_str(img)
     bin_list = split_str(binary, 8)
 
     for data in bin_list:
-        f = open('example.data', 'ab')
+        f = open(args.output, "ab")
         f.write(pack('B', int(data, 2)))
         f.close
     return
